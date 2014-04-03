@@ -9,29 +9,15 @@
 #include <irrlicht.h>
 #include "driverChoice.h"
 
-#include "kul/cgi/scene.hpp"
-#include "kul/cgi/scene/graph.hpp"
-#include "kul/cgi/irr/2D/isometric.hpp"
+#include "irrlight/scene.hpp"
+#include "irrlight/scene/graph.hpp"
 
-
-class Scene : public AScene {
-	public:
-		Scene() {}
-		~Scene();
-		void setUp 		(IrrlichtDevice *device){}
-		void tearDown   (IrrlichtDevice *device){}
-		void draw 		(IrrlichtDevice *device){}
-		bool keyDown	(IrrlichtDevice *device, irr::EKEY_CODE keyCode)	{ return false;}
-		bool keyUp 		(IrrlichtDevice *device, irr::EKEY_CODE keyCode)	{ return false;}
-		bool OnEvent	(IrrlichtDevice *device, const irr::SEvent& event)	{ return false;}
-};
-
-
+#include <scene.hpp>
 
 int main(int argc, char* argv[]) {	
-	using namespace kul::cgi;
+	using namespace irrlight;
 	std::shared_ptr<SceneGraph> sg(SceneGraph::getInstance());
-	irr::IrrlichtDevice& device = *createDevice(video::EDT_BURNINGSVIDEO, core::dimension2d<u32>(800, 600), 32, false, false, false, sg.get());
+	irr::IrrlichtDevice& device = *createDevice(video::EDT_BURNINGSVIDEO, core::dimension2d<u32>(512, 512), 32, false, false, false, sg.get());
 	//irr::IrrlichtDevice * device  = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(512, 384), 32, false, false, false, SceneGraph::getInstance());
 
 	sg->setDevice(&device);

@@ -6,7 +6,7 @@
 	</project>
 	<dependencies>
 		<dependency>
-			<name>kul.cgi.irr.2D</name>
+			<name>irrlight</name>
 			<version>master</version>
 			<!--remote scm="git">http://www.github.com/Dekken/kul.cgi.git</remote-->
 		</dependency>
@@ -15,10 +15,17 @@
 		<include>./inc</include>
 	</includes>
 	<build type="exe" mode="static" main="./main.cpp">
+		<env>
+			<vars>
+				<var name="PATH" mode="prepend">/home/philix/sand/repo/cpp/l/llvm/make-debug/Debug+Asserts/bin</var>
+			</vars>
+		</env>
 		<files>
 			<file type="cpp">
+				<compiler>ccache clang++ -m64</compiler>
+				<linker>ccache clang++ -m64 -pthread</linker>
 				<args>
-					<arg>-std=c++0x</arg><arg>-D__GXX_EXPERIMENTAL_CXX0X__</arg>
+					<arg>-std=c++11</arg><arg>-D__GXX_EXPERIMENTAL_CXX0X__</arg>
 					<arg>-Wall</arg><arg>-fmessage-length=0</arg>
 					<arg>-O0</arg><arg>-g3</arg>
 				</args>
