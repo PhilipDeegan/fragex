@@ -4,11 +4,14 @@
 		<name>fragex</name>
 		<version>master</version>
 	</project>
+	<scm scm="git">
+		<scr>http://www.github.com/Dekken/fragex.git</scr>
+	</scm>
 	<dependencies>
 		<dependency>
 			<name>irrlight</name>
 			<version>master</version>
-			<!--remote scm="git">http://www.github.com/Dekken/kul.cgi.git</remote-->
+			<remote scm="git">http://www.github.com/Dekken/irrlight.git</remote>
 		</dependency>
 	</dependencies>
 	<includes>
