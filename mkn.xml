@@ -41,15 +41,9 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 		<include>./inc</include>
 	</includes>
 	<build type="exe" mode="static" main="./main.cpp">
-		<env>
-			<vars>
-				<var name="PATH" mode="prepend">/home/philix/sand/repo/cpp/l/llvm/make-debug/Debug+Asserts/bin</var>
-			</vars>
-		</env>
 		<files>
 			<file type="cpp">
-				<compiler>ccache clang++ -m64</compiler>
-				<linker>ccache clang++ -m64 -pthread</linker>
+				<linker-end>-pthread</linker-end>
 				<args>
 					<arg>-std=c++11</arg><arg>-D__GXX_EXPERIMENTAL_CXX0X__</arg>
 					<arg>-Wall</arg><arg>-fmessage-length=0</arg>
