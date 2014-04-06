@@ -24,6 +24,7 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _FRAGEX_SCENE_HPP_
 #define _FRAGEX_SCENE_HPP_
 
+#include "kul/log.hpp"
 #include "kul/string.hpp"
 
 #include "irrlicht.h"
@@ -40,8 +41,8 @@ using namespace irrlight;
 class Scene;
 class SceneKeyHandler;
 
-
-#include "kul/log.hpp"
+// TODO IMPLEMENT
+class Pixel{};
 
 class Quadrant{
 	private:
@@ -71,6 +72,7 @@ class Quadrant{
 		friend class Scene;
 		friend class SceneKeyHandler;
 };
+
 class Scene : public irrlight::AScene {
 	private:
 		std::vector<Quadrant> pixels;
@@ -98,7 +100,7 @@ class Scene : public irrlight::AScene {
 		friend class SceneKeyHandler;
 };
 
-//TODO IMPLELEMT FOCUSING
+//TODO IMPLELEMT TERMINAL MODAL WINDOW
 #include <regex>
 class SceneKeyHandler{
 	public:
