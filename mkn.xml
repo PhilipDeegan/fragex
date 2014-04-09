@@ -40,7 +40,7 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 	<includes>
 		<include>./inc</include>
 	</includes>
-	<build type="exe" mode="static" main="./main.cpp">
+	<build type="exe" main="./main.cpp">
 		<files>
 			<file type="cpp">
 				<linker-end>-pthread</linker-end>
