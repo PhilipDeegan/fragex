@@ -88,6 +88,10 @@ class Scene : public irrlight::AScene {
 			for(Quadrant p : Quadrant(w/2, 0  , w/2, h/2, "1").solve()) pixels.push_back(p);
 			for(Quadrant p : Quadrant(0  , h/2, w/2, h/2, "2").solve()) pixels.push_back(p);
 			for(Quadrant p : Quadrant(w/2, h/2, w/2, h/2, "3").solve()) pixels.push_back(p);
+
+			console.history().addNew(irr::core::stringw(".*1.*").c_str());
+			console.history().addNew(irr::core::stringw(".*(12|21|03|30).*").c_str());
+			console.history().addNew(irr::core::stringw("(1[103]|0[12]|2[10]|21)*").c_str());
 		}
 		~Scene(){}
 		void setUp 		(IrrlichtDevice *device);

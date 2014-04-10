@@ -45,8 +45,9 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 			<file type="cpp">
 				<linker-end>-pthread</linker-end>
 				<args>
-					<arg>-std=c++11</arg><arg>-D__GXX_EXPERIMENTAL_CXX0X__</arg>
-					<arg>-Wall</arg><arg>-fmessage-length=0</arg>
+					<arg>-std=c++11</arg/>
+					<arg>-Wall</arg>
+					<arg>-fmessage-length=0</arg>
 					<arg>-O0</arg><arg>-g3</arg>
 				</args>
 			</file>
