@@ -24,8 +24,7 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 #include <irrlicht.h>
 #include "driverChoice.h"
 
-#include "irrlight/scene.hpp"
-#include "irrlight/scene/graph.hpp"
+#include "irrlight.hpp"
 
 #include <scene.hpp>
 

@@ -51,8 +51,8 @@ void Scene::draw(IrrlichtDevice *device){
 			c += fps;
 			device->setWindowCaption(c.c_str());
 		}
-		if(console.isShown()) {
-			console.draw(device);
+		if(terminal.isShown()) {
+			terminal.draw(device);
 			device->getGUIEnvironment()->drawAll();
 		}
 		else{

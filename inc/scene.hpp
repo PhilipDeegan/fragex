@@ -29,9 +29,7 @@ along with this application.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "irrlicht.h"
 
-#include "irrlight/scene.hpp"
-#include "irrlight/scene.ui.hpp"
-#include "irrlight/dev/console.hpp"
+#include "irrlight.hpp"
 
 using namespace irr;
 using namespace irr::gui;
@@ -76,7 +74,7 @@ class Quadrant{
 class Scene : public irrlight::AScene {
 	private:
 		std::vector<Quadrant> pixels;
-		irrlight::dev::Console console;
+		irrlight::Terminal terminal;
 		std::string reg;		
 		uint lFps = -1;
 	public:
@@ -89,9 +87,9 @@ class Scene : public irrlight::AScene {
 			for(Quadrant p : Quadrant(0  , h/2, w/2, h/2, "2").solve()) pixels.push_back(p);
 			for(Quadrant p : Quadrant(w/2, h/2, w/2, h/2, "3").solve()) pixels.push_back(p);
 
-			console.history().addNew(irr::core::stringw(".*1.*").c_str());
-			console.history().addNew(irr::core::stringw(".*(12|21|03|30).*").c_str());
-			console.history().addNew(irr::core::stringw("(1[103]|0[12]|2[10]|21)*").c_str());
+			terminal.history().addNew(irr::core::stringw(".*1.*").c_str());
+			terminal.history().addNew(irr::core::stringw(".*(12|21|03|30).*").c_str());
+			terminal.history().addNew(irr::core::stringw("(1[103]|0[12]|2[10]|21)*").c_str());
 		}
 		~Scene(){}
 		void setUp 		(IrrlichtDevice *device);
@@ -109,11 +107,11 @@ class Scene : public irrlight::AScene {
 class SceneKeyHandler{
 	public:
 		static bool keyUp(irr::IrrlichtDevice *device, Scene& scene, irr::EKEY_CODE keyCode){
-			if(keyCode == irr::KEY_OEM_3) { !scene.console.isShown() ? scene.console.show(device) : scene.console.hide(device); return true; }
-			if(scene.console.isShown()){
+			if(keyCode == irr::KEY_OEM_3) { !scene.terminal.isShown() ? scene.terminal.show(device) : scene.terminal.hide(device); return true; }
+			if(scene.terminal.isShown()){
 				if(keyCode == irr::KEY_RETURN){
 					try{
-						std::regex re(irrlight::dev::ConsoleEnterKeyHandler::handle(scene.console, device));
+						std::regex re(irrlight::TerminalEnterKeyHandler::handle(scene.terminal, device));
 						for(Quadrant& q : scene.pixels) q.rgb(255, 255, 255);
 						
 						for(Quadrant& q : scene.pixels)
@@ -121,12 +119,12 @@ class SceneKeyHandler{
 								q.rgb(0, 0, 0);
 
 					}catch(const std::regex_error& e){ KLOG(ERROR) << e.what(); }
-				}else return irrlight::dev::ConsoleKeyEntryHandler::keyUp(device, scene.console, keyCode);
+				}else return irrlight::TerminalKeyEntryHandler::keyUp(device, scene.terminal, keyCode);
 			}
 			return false;
 		}
 		static bool keyDown(irr::IrrlichtDevice *device, Scene& scene, irr::EKEY_CODE keyCode){
-			if(scene.console.isShown()) return irrlight::dev::ConsoleKeyEntryHandler::keyDown(device, scene.console, keyCode);
+			if(scene.terminal.isShown()) return irrlight::TerminalKeyEntryHandler::keyDown(device, scene.terminal, keyCode);
 
 			return false;
 		}
