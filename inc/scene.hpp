@@ -118,7 +118,7 @@ class SceneKeyHandler{
 							if(std::regex_match(q.i, re))
 								q.rgb(0, 0, 0);
 
-					}catch(const std::regex_error& e){ KLOG(ERROR) << e.what(); }
+					}catch(const std::regex_error& e){ KLOG(ERR) << e.what(); }
 				}else return irrlight::TerminalKeyEntryHandler::keyUp(device, scene.terminal, keyCode);
 			}
 			return false;
