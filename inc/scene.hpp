@@ -74,11 +74,11 @@ class Quadrant{
 class Scene : public irrlight::AScene {
 	private:
 		std::vector<Quadrant> pixels;
-		irrlight::Terminal terminal;
-		std::string reg;		
+		irrlight::Terminal t;
+		std::string reg;
 		uint lFps = -1;
 	public:
-		Scene(){
+		Scene(irr::IrrlichtDevice *d) : irrlight::AScene(d), t(d){
 			const uint w = 512;
 			const uint h = 512;
 
@@ -87,17 +87,18 @@ class Scene : public irrlight::AScene {
 			for(Quadrant p : Quadrant(0  , h/2, w/2, h/2, "2").solve()) pixels.push_back(p);
 			for(Quadrant p : Quadrant(w/2, h/2, w/2, h/2, "3").solve()) pixels.push_back(p);
 
-			terminal.history().addNew(irr::core::stringw(".*1.*").c_str());
-			terminal.history().addNew(irr::core::stringw(".*(12|21|03|30).*").c_str());
-			terminal.history().addNew(irr::core::stringw("(1[103]|0[12]|2[10]|21)*").c_str());
+			t.history().add(irr::core::stringw(".*1.*").c_str());
+			t.history().add(irr::core::stringw(".*(12|21|03|30).*").c_str());
+			t.history().add(irr::core::stringw("(1[103]|0[12]|2[10]|21)*").c_str());
 		}
 		~Scene(){}
-		void setUp 		(IrrlichtDevice *device);
-		void tearDown   (IrrlichtDevice *device);
-		void draw 		(IrrlichtDevice *device);
-		bool keyDown	(IrrlichtDevice *device, irr::EKEY_CODE keyCode);
-		bool keyUp 		(IrrlichtDevice *device, irr::EKEY_CODE keyCode);
-		bool OnEvent	(IrrlichtDevice *device, const irr::SEvent& event);
+		void setUp 		();
+		void tearDown   ();
+		void draw 		();
+		bool keyDown	(irr::EKEY_CODE keyCode);
+		bool keyUp 		(irr::EKEY_CODE keyCode);
+		bool OnEvent	(const irr::SEvent& event);
+		irrlight::Terminal& terminal(){ return t;}
 
 		friend class SceneKeyHandler;
 };
@@ -107,11 +108,11 @@ class Scene : public irrlight::AScene {
 class SceneKeyHandler{
 	public:
 		static bool keyUp(irr::IrrlichtDevice *device, Scene& scene, irr::EKEY_CODE keyCode){
-			if(keyCode == irr::KEY_OEM_3) { !scene.terminal.isShown() ? scene.terminal.show(device) : scene.terminal.hide(device); return true; }
-			if(scene.terminal.isShown()){
+			if(keyCode == irr::KEY_OEM_3) { !scene.terminal().shown() ? scene.terminal().show() : scene.terminal().hide(); return true; }
+			if(scene.terminal().shown()){
 				if(keyCode == irr::KEY_RETURN){
 					try{
-						std::regex re(irrlight::TerminalEnterKeyHandler::handle(scene.terminal, device));
+						std::regex re(irrlight::TerminalEnterKeyHandler::handle(scene.terminal(), device));
 						for(Quadrant& q : scene.pixels) q.rgb(255, 255, 255);
 						
 						for(Quadrant& q : scene.pixels)
@@ -119,12 +120,12 @@ class SceneKeyHandler{
 								q.rgb(0, 0, 0);
 
 					}catch(const std::regex_error& e){ KLOG(ERR) << e.what(); }
-				}else return irrlight::TerminalKeyEntryHandler::keyUp(device, scene.terminal, keyCode);
+				}else return irrlight::TerminalKeyEntryHandler::keyUp(device, scene.terminal(), keyCode);
 			}
 			return false;
 		}
 		static bool keyDown(irr::IrrlichtDevice *device, Scene& scene, irr::EKEY_CODE keyCode){
-			if(scene.terminal.isShown()) return irrlight::TerminalKeyEntryHandler::keyDown(device, scene.terminal, keyCode);
+			if(scene.terminal().shown()) return irrlight::TerminalKeyEntryHandler::keyDown(device, scene.terminal(), keyCode);
 
 			return false;
 		}

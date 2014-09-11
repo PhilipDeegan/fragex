@@ -23,24 +23,24 @@ along with this application.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "scene.hpp"
 
-void Scene::setUp   (IrrlichtDevice *device){}
+void Scene::setUp	(){}
 
-void Scene::tearDown   (IrrlichtDevice *device){}
+void Scene::tearDown(){}
 
-bool Scene::keyDown(IrrlichtDevice *device, irr::EKEY_CODE keyCode) {	
-	return SceneKeyHandler::keyDown	(device, *this, keyCode); 
+bool Scene::keyDown	(irr::EKEY_CODE keyCode) {	
+	return SceneKeyHandler::keyDown	(device(), *this, keyCode); 
 }
-bool Scene::keyUp  (IrrlichtDevice *device, irr::EKEY_CODE keyCode) {	
-	return SceneKeyHandler::keyUp	(device, *this, keyCode); 
+bool Scene::keyUp	(irr::EKEY_CODE keyCode) {	
+	return SceneKeyHandler::keyUp	(device(), *this, keyCode); 
 }
-bool Scene::OnEvent(IrrlichtDevice *device, const SEvent& event){
+bool Scene::OnEvent(const SEvent& event){
 	if(event.EventType == EET_MOUSE_INPUT_EVENT && event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN){}
 	return false;
 }
 
-void Scene::draw(IrrlichtDevice *device){
-	if (device->isWindowActive()){
-		irr::video::IVideoDriver * driver	= device->getVideoDriver();
+void Scene::draw(){
+	if (device()->isWindowActive()){
+		irr::video::IVideoDriver * driver = device()->getVideoDriver();
 		driver->beginScene(true, true, video::SColor(0, 255, 255, 255));		
 		
 		uint fps = driver->getFPS();
@@ -49,11 +49,11 @@ void Scene::draw(IrrlichtDevice *device){
 			c += driver->getName() ;
 			c += L"] FPS: ";
 			c += fps;
-			device->setWindowCaption(c.c_str());
+			device()->setWindowCaption(c.c_str());
 		}
-		if(terminal.isShown()) {
-			terminal.draw(device);
-			device->getGUIEnvironment()->drawAll();
+		if(terminal().shown()) {
+			terminal().draw();
+			device()->getGUIEnvironment()->drawAll();
 		}
 		else{
 			for(const Quadrant& q : pixels)
@@ -61,6 +61,6 @@ void Scene::draw(IrrlichtDevice *device){
 		}
 		driver->endScene();
 	}else{
-		device->yield();
+		device()->yield();
 	}
 }
