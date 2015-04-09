@@ -26,32 +26,59 @@ along with this application.  If not, see <http://www.gnu.org/licenses/>.
 	<project>
 		<name>fragex</name>
 		<version>master</version>
+		<scr scm="git">http://www.github.com/Dekken/fragex.git</scr>
 	</project>
-	<scm scm="git">
-		<scr>http://www.github.com/Dekken/fragex.git</scr>
-	</scm>
-	<dependencies>
-		<dependency>
-			<name>irrlight</name>
-			<profile>nixr</profile>
-			<version>master</version>
-			<remote scm="git">http://www.github.com/Dekken/irrlight.git</remote>
-		</dependency>
-	</dependencies>
-	<includes>
-		<include>./inc</include>
-	</includes>
-	<build type="exe" main="./main.cpp">
-		<files>
-			<file type="cpp">
-				<linker-end>-pthread</linker-end>
-				<args>
-					<arg>-std=c++11</arg>
-					<arg>-Wall</arg>
-					<arg>-fmessage-length=0</arg>
-					<arg>-O0</arg><arg>-g3</arg>
-				</args>
-			</file>
-		</files>
-	</build>
+
+	<profiles>
+		<profile name="c">
+			<includes>
+				<include>./inc</include>
+			</includes>
+			<sources>
+				<source recurse="false">.</source>
+			</sources>
+		</profile>
+		<profile name="nix" parent="c" os="nix">
+			<dependencies>
+				<dependency>
+					<name>irrlight</name>
+					<version>master</version>
+					<scr scm="git" run="make">http://www.github.com/Dekken/irrlight.git</scr>
+				</dependency>
+			</dependencies>
+			<build type="exe" main="./main.cpp">
+				<files>
+					<file type="cpp">
+						<linker-end>-pthread</linker-end>
+						<args>
+							<arg>-std=c++1y</arg>
+							<arg>-Wall</arg>
+							<arg>-fmessage-length=0</arg>
+						</args>
+					</file>
+				</files>
+			</build>
+		</profile>
+
+		<profile name="win" parent="c" os="win">
+			<dependencies>
+				<dependency>
+					<name>irrlight</name>
+					<version>master</version>
+					<scr scm="git" run="make.bat">http://www.github.com/Dekken/irrlight.git</scr>
+				</dependency>
+			</dependencies>
+			<build type="exe" mode="static" main="./main.cpp">
+				<files>
+					<file type="cpp">
+						<args><arg>/EHsc</arg></args>
+					</file>
+				</files>
+			</build>
+		</profile>
+
+		<profile name="bsd" parent="nix" os="bsd">
+			<build type="exe" main="./main.cpp"/>
+		</profile>
+	</profiles>
 </maiken>
