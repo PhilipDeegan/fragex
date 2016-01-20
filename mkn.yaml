@@ -1,0 +1,18 @@
+
+
+name: fragex
+version: master
+properties:
+    git: http://github.com
+
+dependencies:
+  - name: gl.glew
+    version: master
+    scm: ${git}/dekken/gl.glew.git
+  - name: gl.glfw
+    version: master
+    scm: ${git}/dekken/gl.glfw.git
+
+main: main.cpp
+
+args: -DGL_GLEXT_PROTOTYPES

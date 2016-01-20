@@ -44,13 +44,13 @@ class Pixel{};
 
 class Quadrant{
 	private:
-		uint r,g,b;
+		uint r = 255, g = 255, b = 255;
 		const uint x;
 		const uint y;
 		const uint w;
 		const uint h;
 		const std::string i;
-		Quadrant(uint x, uint y, uint w, uint h, std::string i) : r(255), g(255), b(255), x(x), y(y), w(w), h(h), i(i){}
+		Quadrant(uint& x, uint& y, uint& w, uint& h, std::string i) : x(x), y(y), w(w), h(h), i(i){}
 		std::vector<Quadrant> solve(){
 			std::vector<Quadrant> pixels;
 			if(w == 1 && h == 1) pixels.push_back(*this);			
@@ -62,10 +62,10 @@ class Quadrant{
 			}
 			return pixels;
 		}
-		void red  (uint r){ this->r = r; }
-		void green(uint g){ this->g = g; }
-		void blue (uint b){ this->b = b; }
-		void rgb  (uint r, uint g, uint b){ this->r = r; this->g = g; this->b = b; }
+		void red  (uint& r){ this->r = r; }
+		void green(uint& g){ this->g = g; }
+		void blue (uint& b){ this->b = b; }
+		void rgb  (uint& r, uint& g, uint& b){ this->r = r; this->g = g; this->b = b; }
 	public:		
 		friend class Scene;
 		friend class SceneKeyHandler;
@@ -114,10 +114,7 @@ class SceneKeyHandler{
 					try{
 						std::regex re(irrlight::TerminalEnterKeyHandler::handle(scene.terminal(), device));
 						for(Quadrant& q : scene.pixels) q.rgb(255, 255, 255);
-						
-						for(Quadrant& q : scene.pixels)
-							if(std::regex_match(q.i, re))
-								q.rgb(0, 0, 0);
+						for(Quadrant& q : scene.pixels) if(std::regex_match(q.i, re)) q.rgb(0, 0, 0);
 
 					}catch(const std::regex_error& e){ KLOG(ERR) << e.what(); }
 				}else return irrlight::TerminalKeyEntryHandler::keyUp(device, scene.terminal(), keyCode);
