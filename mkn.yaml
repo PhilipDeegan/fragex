@@ -2,16 +2,12 @@
 
 name: fragex
 version: master
-property:
-    git: http://github.com
 
 dep:
   - name: gl.glew
     version: master
-    # scm: ${git}/dekken/gl.glew.git
   - name: gl.glfw
     version: master
-    # scm: ${git}/dekken/gl.glfw.git
 
 main: main.cpp
 
