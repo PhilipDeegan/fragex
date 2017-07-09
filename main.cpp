@@ -40,7 +40,7 @@ class Quadrant{
         Quadrant(const ushort& x, const ushort& y, const ushort& w, const ushort& h, const std::string& i) : x(x), y(y), w(w), h(h), i(i){}
         std::vector<Quadrant> solve(){
             std::vector<Quadrant> pixels;
-            if(w == 1 && h == 1) pixels.push_back(*this);           
+            if(w == 1 && h == 1) pixels.push_back(*this);
             else{
                 for(Quadrant p : Quadrant(x      , y      , w/2, h/2, i + "0").solve()) pixels.push_back(p);
                 for(Quadrant p : Quadrant(x + w/2, y      , w/2, h/2, i + "1").solve()) pixels.push_back(p);
@@ -68,26 +68,26 @@ static void initialize(GLuint &vao) {
     glEnable(GL_PROGRAM_POINT_SIZE);
     // 4 triangles to be rendered
     GLfloat vertices_position[24] = {
-    
-    
+
+
     };
-    
+
     // Create a Vector Buffer Object that will store the vertices on video memory
     GLuint vbo;
     glGenBuffers(1, &vbo);
-    
+
     // Allocate space and upload the data from CPU to GPU
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_position), vertices_position, GL_STATIC_DRAW);
-    
+
     // GLuint shaderProgram = create_program("shaders/vert.shader", "shaders/frag.shader");
-    
+
     // // Get the location of the attributes that enters in the vertex shader
     // GLint position_attribute = glGetAttribLocation(shaderProgram, "position");
-        
+
     // // Specify how the data for position can be accessed
     // glVertexAttribPointer(position_attribute, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    
+
     // // Enable the attribute
     // glEnableVertexAttribArray(position_attribute);
 }
@@ -96,7 +96,7 @@ static void display(GLuint& vao) {
     float* pixels[640*480*3] = { 0 };;
     for(int i=0;i< 640*480*3; i++) {
     // colour(10.0-((i*20.0)/ 640*480*3 ), &pixels[i*3]);
-    } 
+    }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDrawPixels(640,480,GL_RGB,GL_FLOAT,pixels);
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]) {
 
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    
+
 
     GLfloat g_color_buffer_data[pixels.size()];
     for(int i = 0; i < pixels.size(); i++)
