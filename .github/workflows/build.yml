@@ -1,0 +1,25 @@
+name: ubuntu-latest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install deps
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+
+    - name: setup
+      run: |
+        wget https://github.com/mkn/mkn/releases/download/latest/mkn_nix
+        chmod +x mkn_nix
+        KLOG=3 ./mkn_nix clean build -dtOa "-std=c++17 -fPIC"
+
