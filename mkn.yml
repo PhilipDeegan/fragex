@@ -1,0 +1,20 @@
+
+
+name: fragex
+version: master
+
+parent: bin
+
+profile:
+- name: inc
+  inc: inc
+  dep: mkn.kul gl.irrlight
+
+- name: bin
+  parent: inc
+  src: src
+  main: main.cpp
+
+- name: format
+  mod: |
+    clang.format{init{style: file, types: hpp cpp ipp, paths: .}}

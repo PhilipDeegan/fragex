@@ -28,26 +28,47 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 #include "scene.hpp"
-#include "mkn/kul/log.hpp"
 
-int main(int argc, char* argv[]) {
-  SceneGraph& sg = SceneGraph::INSTANCE();
-  irr::IrrlichtDevice& device = *createDevice(video::EDT_OPENGL, core::dimension2d<u32>(512, 512),
-                                              32, false, false, false, &sg);
+void Scene::setUp() {}
 
-  sg.device(&device);
-  sg.scene(new Scene(&device));
+void Scene::tearDown() {}
 
-  try {
-    while (device.run() && device.getVideoDriver()) sg.draw();
-  } catch (mkn::kul::Exception const& e) {
-    KOUT(NON) << e.what();
-  } catch (std::exception const& e) {
-    KOUT(NON) << e.what();
+bool Scene::keyDown(irr::EKEY_CODE keyCode) {
+  return SceneKeyHandler::keyDown(device(), *this, keyCode);
+}
+bool Scene::keyUp(irr::EKEY_CODE keyCode) {
+  return SceneKeyHandler::keyUp(device(), *this, keyCode);
+}
+bool Scene::OnEvent(SEvent const& event) {
+  if (event.EventType == EET_MOUSE_INPUT_EVENT &&
+      event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
   }
+  return false;
+}
 
-  device.closeDevice();
-  return 0;
+void Scene::draw() {
+  if (device()->isWindowActive()) {
+    irr::video::IVideoDriver* driver = device()->getVideoDriver();
+    driver->beginScene(true, true, video::SColor(0, 255, 255, 255));
+
+    uint fps = driver->getFPS();
+    if (lFps != fps) {
+      core::stringw c(L"Regex Fractals in irrlicht - [");
+      c += driver->getName();
+      c += L"] FPS: ";
+      c += fps;
+      device()->setWindowCaption(c.c_str());
+    }
+    if (terminal().shown()) {
+      terminal().draw();
+      device()->getGUIEnvironment()->drawAll();
+    } else {
+      for (Quadrant const& q : pixels)
+        driver->drawPixel(q.x, q.y, irr::video::SColor(255, q.r, q.g, q.b));
+    }
+    driver->endScene();
+  } else {
+    device()->yield();
+  }
 }
