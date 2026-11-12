@@ -39,12 +39,15 @@ With [Maiken](https://github.com/mkn/mkn), using [mkn.gl](https://github.com/mkn
 GLFW and GLEW:
 
 ```bash
-mkn clean build -dtOp bin -a "-std=c++20 -fPIC" -l -pthread
+mkn clean build -dtOp bin -a -fPIC -j '{"cpp": "-std=c++20"}' -l -pthread
 ./bin/bin/fragex ".*1.*"
 
 # checks of the addressing and matching, no OpenGL needed
 mkn clean build run -dtOp test -a "-std=c++20 -fPIC"
 ```
+
+`-j` keeps `-std=c++20` off the C sources of GLFW and GLEW. CI uses the clang settings in
+[res/mkn/ubuntu.yml](res/mkn/ubuntu.yml) instead: `mkn clean build -dtOp bin -x res/mkn/ubuntu -l -pthread`.
 
 On Linux GLFW needs the X11 development headers, e.g. on Debian/Ubuntu
 `libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libgl-dev`.

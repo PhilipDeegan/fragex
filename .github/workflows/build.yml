@@ -28,8 +28,8 @@ jobs:
         curl -fL --retry 3 -o mkn https://github.com/mkn/mkn/releases/download/latest/mkn_nix
         chmod +x mkn
         export PATH="$PWD:$PATH"  # mkn.gl's mkn.sh runs mkn
-        KLOG=3 ./mkn clean build run -dtOp test -a "-std=c++20 -fPIC"
-        KLOG=3 ./mkn clean build -dtOp bin -a "-std=c++20 -fPIC" -l -pthread
+        KLOG=3 ./mkn clean build run -dtOp test -x res/mkn/ubuntu
+        KLOG=3 ./mkn clean build -dtOp bin -x res/mkn/ubuntu -l -pthread
         # renders offscreen through OpenGL (mesa llvmpipe) and checks it against the CPU image
         xvfb-run -a ./bin/bin/fragex ".*1.*" --save sierpinski.png
         cmp sierpinski.png res/sierpinski.png

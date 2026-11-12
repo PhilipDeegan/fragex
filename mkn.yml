@@ -1,4 +1,4 @@
-#! clean build run -dtOp test -a "-std=c++20 -fPIC"
+#! clean build run -dtOp test -x res/mkn/ubuntu
 
 name: fragex
 version: master
