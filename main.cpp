@@ -34,9 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // step through the presets and earlier regexes, Escape quits. With --save the fractal is
 // rendered offscreen, checked against the CPU image and written as a PNG.
 
-#include <GL/glew.h>  // before GLFW
-
-#include "mkn/gl/fw.hpp"
+#include "mkn/gl.hpp"
 
 #include "fragex.hpp"
 #include "fragex/png.hpp"
@@ -68,34 +66,6 @@ out vec4 colour;
 uniform sampler2D fractal;
 void main() { colour = vec4(vec3(texture(fractal, uv).r), 1.0); }
 )";
-
-GLuint compile(GLenum const type, char const* const source) {
-  auto const shader = glCreateShader(type);
-  glShaderSource(shader, 1, &source, nullptr);
-  glCompileShader(shader);
-  GLint ok = GL_FALSE;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
-  if (!ok) {
-    char log[1024];
-    glGetShaderInfoLog(shader, sizeof(log), nullptr, log);
-    throw std::runtime_error(std::string("shader compile failed: ") + log);
-  }
-  return shader;
-}
-
-GLuint program() {
-  auto const vs = compile(GL_VERTEX_SHADER, VERTEX), fs = compile(GL_FRAGMENT_SHADER, FRAGMENT);
-  auto const p = glCreateProgram();
-  glAttachShader(p, vs);
-  glAttachShader(p, fs);
-  glLinkProgram(p);
-  glDeleteShader(vs);
-  glDeleteShader(fs);
-  GLint ok = GL_FALSE;
-  glGetProgramiv(p, GL_LINK_STATUS, &ok);
-  if (!ok) throw std::runtime_error("shader link failed");
-  return p;
-}
 
 struct Args {
   std::string regex = fragex::PRESETS[0];
@@ -132,24 +102,11 @@ class App {
  public:
   App(fragex::Fractal const& fractal, bool const visible) : _fractal(fractal) {
     mkn::gl::fw::init();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
     auto const side = static_cast<int>(fractal.side());
-    _window = glfwCreateWindow(side, side, "fragex", nullptr, nullptr);
-    if (!_window) {
-      glfwTerminate();
-      throw std::runtime_error("cannot create an OpenGL 3.3 window");
-    }
-    glfwMakeContextCurrent(_window);
-    glfwSwapInterval(1);
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) throw std::runtime_error("glewInit failed");
-    glGetError();  // glew can leave GL_INVALID_ENUM on core profiles
-
-    _program = program();
+    _window = mkn::gl::fw::create_window(
+        {.width = side, .height = side, .title = "fragex", .visible = visible});
+    mkn::gl::ew::init();
+    _program = mkn::gl::sl::Program::from_source(VERTEX, FRAGMENT);
     glGenVertexArrays(1, &_vao);
     glGenTextures(1, &_texture);
     glBindTexture(GL_TEXTURE_2D, _texture);
@@ -165,7 +122,7 @@ class App {
   ~App() {
     glDeleteTextures(1, &_texture);
     glDeleteVertexArrays(1, &_vao);
-    glDeleteProgram(_program);
+    _program = {};  // needs the context, deleted before the window
     glfwDestroyWindow(_window);
     glfwTerminate();
   }
@@ -194,7 +151,7 @@ class App {
     glViewport((width - side) / 2, (height - side) / 2, side, side);
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glUseProgram(_program);
+    _program.use();
     glBindVertexArray(_vao);
     glBindTexture(GL_TEXTURE_2D, _texture);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -261,7 +218,8 @@ class App {
  private:
   fragex::Fractal const& _fractal;
   GLFWwindow* _window = nullptr;
-  GLuint _program = 0, _vao = 0, _texture = 0;
+  mkn::gl::sl::Program _program;
+  GLuint _vao = 0, _texture = 0;
   std::vector<std::uint8_t> _pixels;
   std::string _regex;
   std::vector<std::string> _history = fragex::PRESETS;
