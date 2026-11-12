@@ -1,4 +1,4 @@
-
+#! clean build run -dtOp test -a "-std=c++20 -fPIC"
 
 name: fragex
 version: master
@@ -8,12 +8,16 @@ parent: bin
 profile:
 - name: inc
   inc: inc
-  dep: mkn.kul gl.irrlight
 
 - name: bin
   parent: inc
-  src: src
+  dep: mkn.gl
   main: main.cpp
+
+# GL free checks of the addressing and matching
+- name: test
+  parent: inc
+  main: test.cpp
 
 - name: format
   mod: |

@@ -1,4 +1,8 @@
-name: ubuntu-latest
+name: build
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -9,17 +13,22 @@ on:
 jobs:
   ubuntu:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install deps
       run: |
         sudo apt-get update
-        sudo apt-get install g++ cmake libxi-dev libgl1-mesa-dev libpng-dev libjpeg-dev zlib1g-dev -qyy
+        sudo apt-get install -qyy libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libgl-dev \
+          xvfb libgl1-mesa-dri
 
-    - name: setup
+    - name: Build/Test
       run: |
-        wget https://github.com/mkn/mkn/releases/download/latest/mkn_nix
-        chmod +x mkn_nix
-        KLOG=3 ./mkn_nix clean build -dtOa "-std=c++17 -fPIC"
-
+        curl -fL --retry 3 -o mkn https://github.com/mkn/mkn/releases/download/latest/mkn_nix
+        chmod +x mkn
+        KLOG=3 ./mkn clean build run -dtOp test -a "-std=c++20 -fPIC"
+        KLOG=3 ./mkn clean build -dtOp bin -a "-std=c++20 -fPIC" -l -pthread
+        # renders offscreen through OpenGL (mesa llvmpipe) and checks it against the CPU image
+        xvfb-run -a ./bin/bin/fragex ".*1.*" --save sierpinski.png
+        cmp sierpinski.png res/sierpinski.png
