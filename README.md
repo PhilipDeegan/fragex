@@ -18,7 +18,7 @@ most significant quadrant first. Pixels whose address matches a regex are drawn 
 |---|---|---|---|
 | ![crosses](res/crosses.png) | ![snowflake](res/snowflake.png) | ![dragon](res/dragon.png) | ![layers](res/layers.png) |
 
-Based on [regex fractals](http://www.reddit.com/r/compsci/comments/21ife7/regex_fractals_source_code/).
+Based on [regex fractals](https://www.reddit.com/r/compsci/comments/21ife7/regex_fractals_source_code/).
 
 ## Usage
 
